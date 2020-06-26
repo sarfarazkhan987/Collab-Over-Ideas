@@ -1,0 +1,93 @@
+{% extends 'collaboverideas/dashboard.html' %}
+
+
+{% load static %}
+{% block title %}
+<title>Shared Artifacts | CollabOverIdeas</title>
+{% endblock %}
+{% block content %}
+<script src="{% static 'collaboverideas/js/file_download.js' %}">
+</script>
+<!--<script src="{% static 'collaboverideas/js/dropzone.js' %}"></script>-->
+<script>
+    (function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);
+</script>
+<style>
+
+    .btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+</style>
+<meta name="file_download_url" content="{% url 'file_download' %}">
+<meta name="file_delete_url" content="{% url 'file_delete' %}">
+<div class="container-fluid" style="padding-left: 300px;">
+    <div class="col-md-10 col-md-offset-0">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Upload Files</strong></div>
+            <div class="panel-body">
+
+                <h4>Select files from your computer</h4>
+                <form action="" method="post" name="FileUploadForm" enctype="multipart/form-data" id="js-upload-form">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label class="btn btn-sm btn-primary btn-file">
+                            Browse File..<input type="file" style="display: none;"  name="files[]" id="js-upload-files" multiple onchange="fileSelected()">
+                            </label>
+                            <span class="small" id="fileNameLabel"></span>
+                        </div>
+
+                        <button type="submit" style="margin-left: 10px;" class="btn btn-sm btn-primary" name="files[]" onclick="uploadFile()">
+                            Upload file
+                        </button>
+                        {% csrf_token %}
+                        <input type="text" id="fileName" name="fileName" style="display:none;"/> <!---->
+                        <input type="text" id="fileType" name="fileType" style="display:none;"/>
+
+                </div>
+                    </form>
+
+                <!-- Upload Finished -->
+                <div class="js-upload-finished">{% csrf_token %}
+                    <h3>Uploaded Files</h3>
+                    <div class="list-group">
+                        {% for file in files_list %}
+                        <!--<form method="POST" action="{% url 'file_download'%}">-->
+                        <div class="list-group-item ">
+                            <a class="delete-file" style="cursor:pointer" name="fid" value="{{file.file_id}}" id = "delete-file-{{file.file_id}}">
+                                <i class="fa fa-trash pull-right" aria-hidden="true" style="margin-top: 3px;"></i></a>
+                            <a href="{% url 'file_download' %}?fileid={{file.file_id}}"
+                               value="{{file.file_id}}"
+                               name="fileid" id="file-{{file.file_id}}" class="file-download" download>
+                                <i class="fa fa-download" aria-hidden="true"></i> {{file.filename}}</a>
+                            <!--<span class="pull-right"></span>-->
+                            <span class="pull-right">Author: {{file.firstname}}&nbsp</span>
+
+                        </div>
+                        {% endfor %}
+                        <!--</form>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</div>
+<!-- /container -->
+
+
+{% endblock %}

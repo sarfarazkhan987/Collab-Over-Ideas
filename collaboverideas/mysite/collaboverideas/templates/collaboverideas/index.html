@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>CollabOverIdeas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'collaboverideas/css/styles.css' %}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="shortcut icon" type="image/png" href="{% static 'collaboverideas/images/favicon.ico'%}"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'collaboverideas/js/scripts.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+
+
+
+</head>
+<body ng-app="myApp">
+<nav>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#myNavbar">
+                <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><span class="fa fa-users"
+                                                   aria-hidden="true"></span> CollabOverIdeas</a>
+        </div>
+       <!-- <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"> About</a></li>
+            </ul>
+        </div>-->
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row row-fluid">
+        <div class="col-md-5 col-md-offset-1">
+            <h1 class="big">A better way to work together</h1>
+            <h3>CollabOverIdeas brings teams together to work through problems,
+                move ideas forward, and learn from each other along the way.</h3>
+        </div>
+
+        <div class="col-md-3 col-md-offset-2">
+            <div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills" style="margin-bottom: 10px;">
+
+                        <li class="active" id="login-form-link"><a href="#"><i
+                                class="fa fa-sign-in" aria-hidden="true"></i> Login</a></li>
+                        <li id="register-form-link"><a href="#"><i
+                                class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                    </ul>
+                    <form id="login-form" action="{% url 'login' %}" name="loginForm" method="post">
+                        {%csrf_token %}
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Username" name="username">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="password"
+                                   placeholder="Password">
+                        </div>
+                        <div class="form-group">
+
+                        <span class="text-danger">{% for message in messages %}
+                                {{message.message}}
+                            {%endfor%}</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" type="submit">Login</button>
+                    </form>
+
+                    <div ng-controller="myController">
+                        <form id="register-form" style="display: none;"
+                              name="registerForm" method="post"
+                              data-validate-username-url="{% url 'validate_username' %}"
+                              action="{% url 'signup' %}"> {% csrf_token %}
+
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-angle-double-right"
+                                                                       aria-hidden="true"></i></span>
+                                    <input class="form-control" type="text" placeholder="First Name"
+                                           pattern="[a-zA-Z]+" ng-model="firstnameModel" id="firstnameModel"
+                                           name="firstname" required="required">
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input class="form-control" type="text" placeholder="Username"
+                                           pattern="[a-zA-Z0-9_]+" ng-model="usernameModel" id="usernameId"
+                                           name="username" required="required">
+                                </div>
+                                <img id="loader" src="{% static 'collaboverideas/images/ajax-loader.gif'%}" style="display: none">
+
+                                <span id="existsError"
+                                ></span>
+
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                                    <input class="form-control" type="password"
+                                           placeholder="Password" pattern=".{8,}" ng-model="passwordModel"
+                                           id="passwordModel" name="password" required="required">
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-envelope"
+                                                                       aria-hidden="true"></i></span>
+
+                                    <input class="form-control" type="email" placeholder="Email"
+                                           name="email" ng-model="emailModel">
+                                </div>
+
+                            </div>
+                            <button name="signupButton" class="btn btn-primary btn-block" type="submit">Sign Up
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

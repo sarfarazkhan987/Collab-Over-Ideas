@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+{% load static%}
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Teams | CollabOverIdeas</title>
+    <!--<link rel="stylesheet" href="{% static 'collaboverideas/css/font-awesome.min.css' %}">-->
+    <!--<link rel="stylesheet" href="{% static 'collaboverideas/css/bootstrap.css' %}">-->
+    <link href="{% static 'collaboverideas/css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
+    <link href="{% static 'collaboverideas/css/font-awesome.min.css' %}" rel="stylesheet">
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <script src="{% static 'collaboverideas/js/jquery.min.js' %}"></script>
+
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>-->
+    <script src="{% static 'collaboverideas/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'collaboverideas/js/scripts_teams.js' %}"></script>
+    <!-- <script type="text/javascript" src="js/angular.js"></script> -->
+<meta name="join_team_url" content="{% url 'join_team' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'collaboverideas/images/favicon.ico'%}"/>
+
+    <style>
+
+    /*
+    Text fields
+*/
+
+body{
+	font-family:'Droid Sans', sans-serif;
+}
+
+div.input-group-option:last-child span.input-group-addon-remove{
+    display: none;
+}
+
+div.input-group-option:last-child input.form-control{
+    border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+div.input-group-option span.input-group-addon-remove{
+	cursor: pointer;
+}
+
+div.input-group-option{
+    margin-bottom: 3px;
+}
+
+/*
+    Selects
+*/
+
+div.input-group-multiple-select:last-child span.input-group-addon-remove{
+	display: none;
+}
+
+div.input-group-multiple-select:last-child input.form-control{
+	border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+div.input-group-multiple-select span.input-group-addon-remove{
+	cursor: pointer;
+    background: none;
+    border: none;
+}
+
+div.input-group-multiple-select{
+    margin-bottom: 5px;
+}
+
+.pull-right {
+    float: right;
+}
+
+.fake-link {
+    cursor: pointer;
+}
+
+    </style>
+
+    <script>
+
+
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#myNavbar">
+                <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}"><span class="fa fa-users"
+                                                                                  aria-hidden="true"></span>
+                CollabIt</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+
+            <ul class="nav navbar-nav navbar-right">
+               <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">{%if invites%}<span id="count-invites" class="badge">{{ invites | length }}</span> {% endif %}Team Invites <i class="fa fa-caret-down"></i></a>
+                     <ul class="dropdown-menu" style="padding: 15px;min-width: 250px;">
+                        <li>
+                           <div class="row">
+                              <div class="col-md-12">
+                                <div id="myPopover" class="">
+                                    {% if invites %}
+                                    {% for invite in invites %}
+                                     <div class="invite">
+                                        {{ invite.team_name }}
+                                         <span id="reject-{{invite.team_id}}" class="fake-link reject-invite" style="color: #d9534f;">
+                                             <span class="fa-stack pull-right">
+                                              <i class="fa fa-circle-o fa-stack-2x"></i>
+                                              <i class="fa fa-times fa-stack-1x"></i>
+                                            </span>
+                                         </span>
+
+                                         <span id="accept-{{invite.team_id}}" class="fake-link accept-invite"  style="color: #5cb85c;">
+                                             <span class="fa-stack pull-right">
+                                              <i class="fa fa-circle-o fa-stack-2x"></i>
+                                              <i class="fa fa-check fa-stack-1x"></i>
+                                            </span>
+                                         </span>
+                                    </div>
+                                    {% endfor %}
+
+                                    {% else %}
+                                        No team invitations.
+                                    {% endif %}
+                                </div>
+
+                              </div>
+                           </div>
+                        </li>
+
+                     </ul>
+                  </li>
+
+
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i> {{user}} <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+
+                        <!--<li class="divider"></li>-->
+                        <li><a href="{% url 'sign_out'%}">Sign Out</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-4 col-md-offset-2">
+            <div class="panel-body">
+                <div class="text-info lead">
+                    Choose team to enter:
+                </div>
+                <div id="available-teams" style="margin-top: 20px;" class="list-group">
+                    {% for team in teams %}
+
+                        <a href="?teamid={{team.id}}" class="list-group-item">
+                            {{ team.team_name}}</a>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-md-offset-1">
+
+            <div class="panel-body">
+                <div class="text-info lead">
+                    Create new team:
+                </div>
+                <form style="margin-top: 20px;" id="add-member-form" method="post" class="form"
+                      name="add-member-form" action="{% url 'add_members' %}">
+                    {%csrf_token %}
+                    <!--<div class="lead">
+
+                        Create a team
+                    </div>-->
+                    <div class="form-group">
+                        <input placeholder="Team Name" type="text" class="form-control" id="teamname"
+                               name="teamnameName">
+                    </div>
+                    <div class="form-group">
+                        <div class="text-info">Select members</div>
+                        <select multiple required="required" id="members" name="membersName" class="form-control">
+                            {% for user in usernames %}
+                            <option value="{{user}}">{{user}}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" name="members" id="members-string" style="display: none;"/>
+                        <input type="text" name="emails" id="emails-string" style="display: none;"/>
+                    </div>
+                    <div class="text-info">
+                        Invite by E-mail
+                    </div>
+                    <div class="form-group form-group-options">
+                        <div class="input-group input-group-option col-xs-12">
+                            <input type="text" name="option[]" class="invite-email form-control"
+                                   placeholder="Enter Email Address">
+                            <span class="input-group-addon input-group-addon-remove">
+                                <i class="fa fa-times"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="add-member">Add Members
+                    </button>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+</div>
+
+
+</body>
+</html>

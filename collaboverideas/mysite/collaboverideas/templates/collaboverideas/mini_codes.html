@@ -1,0 +1,273 @@
+{% extends 'collaboverideas/dashboard.html' %}
+{% load static %}
+{% block title %}
+<title>Code Repository | CollabOverIdeas</title>
+{% endblock %}
+{% block import %}
+<meta name="view_code_url" content="{% url 'view_code' %}">
+<meta name="delete_code_url" content="{% url 'delete_code' %}">
+
+
+<script src="{% static 'collaboverideas/js/scripts_codes.js' %}"></script>
+<link href="{% static 'collaboverideas/css/styles_codes.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid" style="padding-left: 300px;">
+    <div class="grid">
+
+        <div class="row">
+            <div class="col-md-offset-0 col-md-8">
+                    <h2>Code Repository</h2>
+                      <!--static-->
+                {% if not codes %} <h6>There are no code snippets in your team.</h6> {% endif %}
+                {% for code in codes %}
+                   <div class="panel panel-white post panel-shadow">
+                <div class="post-heading">
+
+                    <div class="pull-left meta">
+                        <div class="title h5">
+                            <a id="view-{{code.code_id}}" class="view-code" href="#myModal" data-toggle="modal"><b>{{ code.file_name }}</b></a>
+                        </div>
+                        <h6 class="text-muted time text-capitalize"><b>Author:</b> {{code.name}}</h6>
+                        <h6 class=" time text-capitalize" style="color: black;">Uploaded on: {{ code.time|date:"M d, Y"}}</h6>
+                        <h6 class=" time text-capitalize" style="color: black;">Language: {{code.language}}</h6>
+                    </div>
+                </div>
+                <div class="post-description">
+
+                    <div class="stats">
+                        <a href="#myModalAdd" data-toggle="modal" id="edit-{{code.code_id}}" class="btn btn-default edit-code stat-item">
+                            <i class="fa fa-pencil icon"></i>Edit
+                        </a>
+                        <a id="delete-{{code.code_id}}" class="delete-code btn btn-default stat-item">
+                            <i class="fa fa-trash icon"></i>Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+                </ul>
+                <button id="add-new-code" type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModalAdd">Add New
+                </button>
+
+            </div>
+
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" id="code-title"></h4>
+                        <small id="code-author"></small>
+                    </div>
+                    <div class="modal-body">
+                        <div id="read_editor" class="editor"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="myModalAdd" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Code</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'mini_codes' %}"> {% csrf_token %}
+                            <div class="form-group">
+                                <label for="code-name">File Name:</label>
+                                <input type="text" class="form-control" id="code-name" name="code-name" required="required">
+                            </div>
+                            <div class="form-group ">
+                                <label for="editing-lang">Select language:</label>
+                                <select class="form-control text-capitalize" name="editing-lang" id="editing-lang">
+                                    <option value="abap">abap</option>
+                                    <option value="abc">abc</option>
+                                    <option value="actionscript">actionscript</option>
+                                    <option value="ada">ada</option>
+                                    <option value="apache_conf">apache_conf</option>
+                                    <option value="applescript">applescript</option>
+                                    <option value="asciidoc">asciidoc</option>
+                                    <option value="assembly_x86">assembly_x86</option>
+                                    <option value="autohotkey">autohotkey</option>
+                                    <option value="batchfile">batchfile</option>
+                                    <option value="bro">bro</option>
+                                    <option value="c9search">c9search</option>
+                                    <option value="cirru">cirru</option>
+                                    <option value="clojure">clojure</option>
+                                    <option value="cobol">cobol</option>
+                                    <option value="coffee">coffee</option>
+                                    <option value="coldfusion">coldfusion</option>
+                                    <option value="csharp">csharp</option>
+                                    <option value="css">css</option>
+                                    <option value="curly">curly</option>
+                                    <option value="c_cpp">c_cpp</option>
+                                    <option value="d">d</option>
+                                    <option value="dart">dart</option>
+                                    <option value="diff">diff</option>
+                                    <option value="django">django</option>
+                                    <option value="dockerfile">dockerfile</option>
+                                    <option value="dot">dot</option>
+                                    <option value="drools">drools</option>
+                                    <option value="eiffel">eiffel</option>
+                                    <option value="ejs">ejs</option>
+                                    <option value="elixir">elixir</option>
+                                    <option value="elm">elm</option>
+                                    <option value="erlang">erlang</option>
+                                    <option value="forth">forth</option>
+                                    <option value="fortran">fortran</option>
+                                    <option value="ftl">ftl</option>
+                                    <option value="gcode">gcode</option>
+                                    <option value="gherkin">gherkin</option>
+                                    <option value="gitignore">gitignore</option>
+                                    <option value="glsl">glsl</option>
+                                    <option value="gobstones">gobstones</option>
+                                    <option value="golang">golang</option>
+                                    <option value="groovy">groovy</option>
+                                    <option value="haml">haml</option>
+                                    <option value="handlebars">handlebars</option>
+                                    <option value="haskell">haskell</option>
+                                    <option value="haskell_cabal">haskell_cabal</option>
+                                    <option value="haxe">haxe</option>
+                                    <option value="hjson">hjson</option>
+                                    <option value="html">html</option>
+                                    <option value="html_elixir">html_elixir</option>
+                                    <option value="html_ruby">html_ruby</option>
+                                    <option value="ini">ini</option>
+                                    <option value="io">io</option>
+                                    <option value="jack">jack</option>
+                                    <option value="jade">jade</option>
+                                    <option value="java" selected="selected">java</option>
+                                    <option value="javascript">javascript</option>
+                                    <option value="json">json</option>
+                                    <option value="jsoniq">jsoniq</option>
+                                    <option value="jsp">jsp</option>
+                                    <option value="jsx">jsx</option>
+                                    <option value="julia">julia</option>
+                                    <option value="kotlin">kotlin</option>
+                                    <option value="latex">latex</option>
+                                    <option value="lean">lean</option>
+                                    <option value="less">less</option>
+                                    <option value="liquid">liquid</option>
+                                    <option value="lisp">lisp</option>
+                                    <option value="livescript">livescript</option>
+                                    <option value="live_script">live_script</option>
+                                    <option value="logiql">logiql</option>
+                                    <option value="lsl">lsl</option>
+                                    <option value="lua">lua</option>
+                                    <option value="luapage">luapage</option>
+                                    <option value="lucene">lucene</option>
+                                    <option value="makefile">makefile</option>
+                                    <option value="markdown">markdown</option>
+                                    <option value="mask">mask</option>
+                                    <option value="matlab">matlab</option>
+                                    <option value="maze">maze</option>
+                                    <option value="mel">mel</option>
+                                    <option value="mipsassembler">mipsassembler</option>
+                                    <option value="mips_assembler">mips_assembler</option>
+                                    <option value="mushcode">mushcode</option>
+                                    <option value="mysql">mysql</option>
+                                    <option value="nix">nix</option>
+                                    <option value="nsis">nsis</option>
+                                    <option value="objectivec">objectivec</option>
+                                    <option value="ocaml">ocaml</option>
+                                    <option value="pascal">pascal</option>
+                                    <option value="perl">perl</option>
+                                    <option value="pgsql">pgsql</option>
+                                    <option value="php">php</option>
+                                    <option value="plain_text">plain_text</option>
+                                    <option value="powershell">powershell</option>
+                                    <option value="praat">praat</option>
+                                    <option value="prolog">prolog</option>
+                                    <option value="properties">properties</option>
+                                    <option value="protobuf">protobuf</option>
+                                    <option value="python">python</option>
+                                    <option value="r">r</option>
+                                    <option value="razor">razor</option>
+                                    <option value="rdoc">rdoc</option>
+                                    <option value="rhtml">rhtml</option>
+                                    <option value="rst">rst</option>
+                                    <option value="ruby">ruby</option>
+                                    <option value="rust">rust</option>
+                                    <option value="sass">sass</option>
+                                    <option value="scad">scad</option>
+                                    <option value="scala">scala</option>
+                                    <option value="scheme">scheme</option>
+                                    <option value="scss">scss</option>
+                                    <option value="sh">sh</option>
+                                    <option value="sjs">sjs</option>
+                                    <option value="smarty">smarty</option>
+                                    <option value="snippets">snippets</option>
+                                    <option value="soy_template">soy_template</option>
+                                    <option value="space">space</option>
+                                    <option value="sql">sql</option>
+                                    <option value="sqlserver">sqlserver</option>
+                                    <option value="stylus">stylus</option>
+                                    <option value="svg">svg</option>
+                                    <option value="swift">swift</option>
+                                    <option value="swig">swig</option>
+                                    <option value="tcl">tcl</option>
+                                    <option value="tex">tex</option>
+                                    <option value="text">text</option>
+                                    <option value="textile">textile</option>
+                                    <option value="toml">toml</option>
+                                    <option value="tsx">tsx</option>
+                                    <option value="twig">twig</option>
+                                    <option value="typescript">typescript</option>
+                                    <option value="vala">vala</option>
+                                    <option value="vbscript">vbscript</option>
+                                    <option value="velocity">velocity</option>
+                                    <option value="verilog">verilog</option>
+                                    <option value="vhdl">vhdl</option>
+                                    <option value="wollok">wollok</option>
+                                    <option value="xml">xml</option>
+                                    <option value="xquery">xquery</option>
+                                    <option value="yaml">yaml</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div id="editor" class="editor"></div>
+                                    <textarea name="code-content" style="display: none;" ></textarea>
+                                    <input type="text" name="code-id-edit" id="code-id-edit" style="display: none;"/>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" >Add</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<script src="{% static 'collaboverideas/js/ace/ace.js' %}"></script>
+<script>
+    var editor;
+    $('.editor').each(function( index ) {
+     editor = ace.edit(this);
+     editor.getSession().setMode('ace/mode/java');
+     editor.$blockScrolling = Infinity;
+    });
+
+</script>
+{% endblock %}

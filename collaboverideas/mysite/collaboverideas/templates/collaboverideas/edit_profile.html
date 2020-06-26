@@ -1,0 +1,118 @@
+
+{% extends 'collaboverideas/dashboard.html' %}
+{% block title %}
+<title>Edit Profile | CollabOverIdeas</title>
+{% endblock %}
+{% block import %}
+   <script language='javascript' type='text/javascript'>
+    function check(input) {
+        if (input.value != document.getElementById('password').value) {
+            input.setCustomValidity('Password Must be Matching.');
+        } else {
+            // input is valid -- reset the error message
+            input.setCustomValidity('');
+        }
+    }
+    function checkDOB(input) {
+        var dateString = input.value;
+        var myDate = new Date(dateString);
+        var today = new Date();
+        if (myDate>today) {
+            input.setCustomValidity('Date of Birth cannot be greater than Todays date');
+        } else {
+            // input is valid -- reset the error message
+            input.setCustomValidity('');
+    }}
+
+</script>
+
+
+{% endblock %}
+
+
+{% block content %}
+	<div ng-app="myApp" ng-controller="myController">
+<div class="container-fluid" style="padding-left: 300px;">
+	<div class="col-md-10 col-md-offset-0">
+	<div class="panel-default">
+            <div class="panel-heading ">
+              <h3 class="panel-title">
+              <b>Edit Profile</b></h3>
+            </div>
+	<div class="col-md-8">
+					<form class="form-horizontal" name="UpdateUserForm" id="data_fetching" data-validate-username-url="{% url 'validate_username' %}" method="post" action="{% url 'edit_profile' %}">{% csrf_token %}
+						<div class="form-group">
+						<br>
+							<label for="firstname" class="control-label col-md-4" >First Name</label>
+							<div class="col-md-5">
+								<input id="firstname" name = "firstname" type="text" class="form-control"  value='{{first_name}}' pattern="[a-zA-Z]+">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="lastname" class="control-label col-md-4">Last Name</label>
+							<div class="col-md-5">
+								<input id="lastname" type="text" name="lastname" class="form-control" pattern="[a-zA-Z]+" value="{{last_name}}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="email" class="control-label col-md-4">EmailId</label>
+							<div class="col-md-5">
+								<input id="email" type="email" name="email" class="form-control" value='{{email_id}}'>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="dob" class="control-label col-md-4">Date Of Birth</label>
+							<div class="col-md-5">
+
+								<input id="dob" type="date" name="dob" class="form-control" oninput="checkDOB(this)" value='{{dob | date:"Y-m-d"}}'>
+
+
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="country" class="control-label col-md-4">Country</label>
+							<div class="col-md-5">
+								<input id="country" type="text" name="country" value='{{country_name}}' class="form-control">
+							</div>
+						</div>
+						
+						<div class="form-group" >
+							<label for="username1" class="control-label col-md-4">Username</label>
+							<div class="col-md-5" ng-model="username1">
+								<input id="username1" type="text" name="username1" value='{{uname}}' class="form-control" pattern="[a-zA-Z0-9_]+" disabled>
+							</div>
+							<span ng-show="username1" ng-if="edit_profile.username.$valid==false"
+								  class="text-danger">
+							</span>
+                                <span id="existsError"
+								></span>
+							</div>
+
+
+						<div class="form-group">
+							<label for="password" class="control-label col-md-4" >Password</label>
+							<div class="col-md-5">
+								<input id="password" type="password" name="password" value='{{pwd}}' class="form-control" name="password1" ng-pattern="'.{8,}'">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="control-label col-md-4">Confirm Password</label>
+							<div class="col-md-5">
+								<input id="password2" type="password" class="form-control" name="password2" ng-pattern="'.{8,}'" oninput="check(this)">
+							</div>
+						</div>
+						<button class="btn btn-primary col-md-offset-2 col-md-3"
+							value="Submit">Save Changes</button>
+							<button class="btn btn-default col-md-offset-1 col-md-2"
+							type="reset">Cancel</button>
+						
+						
+					</form>
+					</div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
